@@ -9,9 +9,11 @@ Convert a directory containing a csv metadata file and bitstreams to DSpace Simp
 
 positional arguments:
   Parent directory      full path to the directory (you can omit the final "/")
-  Output SAF directory  full path to the output directory that will contain the SAF subdirectories
+  Output SAF directory  full path to the output directory that will contain the SAF
+                        subdirectories
 
 optional arguments:
   -h, --help            show this help message and exit
   -b BUNDLE, --bundle BUNDLE
-                        images can be added to an alternate bundle if you do not want them included in the default (ORIGINAL) bundle```
+                        images can be added to an alternate bundle if you do not want them
+                        included in the default (ORIGINAL) bundle
