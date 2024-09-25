@@ -7,7 +7,7 @@ from saf_writer.generate_saf import generate_saf
 item = Item()
 
 
-def process_rows(input_values: list, directory: str, saf_directory: str):
+def process_rows(input_values: list, directory: str, saf_directory: str, alt_bundle: str):
     '''
     Reads the file input one line at a time to process item and bitstream
     information. Calls the generate SAF function for individual items.
@@ -15,6 +15,7 @@ def process_rows(input_values: list, directory: str, saf_directory: str):
     :param input_values: A list of dictionaries generated from the input csv file.
     :param directory: The input directory containing the csv and bitstream files
     :param saf_directory: The output SAF directory
+    :param alt_bundle: if provided image bitstreams will be added to this bundle
     :return: void
     '''
 
@@ -36,7 +37,7 @@ def process_rows(input_values: list, directory: str, saf_directory: str):
         elif previous_row is not None:
             # if the next row is an item, generate saf and add metadata to new item
             if row['dc.title'].strip():
-                generate_saf(item, directory, saf_directory, item_count)
+                generate_saf(item, directory, saf_directory, item_count, alt_bundle)
                 item_count += 1
                 item.reset()
                 process_item(row, item)
@@ -48,7 +49,7 @@ def process_rows(input_values: list, directory: str, saf_directory: str):
 
         if row_count == length:
             # if last row just generate the saf
-            generate_saf(item, directory, saf_directory, item_count)
+            generate_saf(item, directory, saf_directory, item_count, alt_bundle)
 
         # Update previous_row to be the current row
         previous_row = row

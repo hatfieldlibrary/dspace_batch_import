@@ -5,7 +5,7 @@ import xml.etree.cElementTree as ET
 from model.item_data import Item
 
 
-def generate_saf(item: Item, input_directory, saf_directory, count):
+def generate_saf(item: Item, input_directory, saf_directory, count, alt_bundle):
     """
     Creates a new SAF subdirectory for an item. The subdirectory will
     contain the contents and dublin_core metadata as well as bitstreams.
@@ -19,6 +19,7 @@ def generate_saf(item: Item, input_directory, saf_directory, count):
     saf_directory (str): The location of the SAF output directory
     count (number): The number of the items processed. Used to name the
     SAF subdirectory for the item.
+    alt_bundle (str): If provided, image bitstreams are added to this bundle
 
     Returns:
     Void
@@ -36,12 +37,14 @@ def generate_saf(item: Item, input_directory, saf_directory, count):
     for bit in bits:
         file = bit['Filename']
         file_name = file
+        if alt_bundle and check_extension(file):
+            file_name = file_name + '\tbundle:' + alt_bundle
         if bit['iiif.label']:
-            file_name = file_name + '\t' +  bit['iiif.label']
+            file_name = file_name + '\tiiif-label:' +  bit['iiif.label']
         if bit['iiif.description']:
-            file_name = file_name + '\t' +  bit['iiif.description']
+            file_name = file_name + '\tiiif-description:' +  bit['iiif.description']
         if bit['iiif.toc']:
-            file_name = file_name + '\t' +  bit['iiif.toc']
+            file_name = file_name + '\tiiif-toc:' +  bit['iiif.toc']
         shutil.copyfile(input_directory + '/' + file, saf_sub_directory + '/' + file)
         contents_file.write(file_name + '\n')
     contents_file.close()
@@ -90,3 +93,6 @@ def generate_saf(item: Item, input_directory, saf_directory, count):
     if write_local:
         tree = ET.ElementTree(root)
         tree.write(saf_sub_directory + '/metadata_local.xml')
+
+def check_extension(file):
+    return file.lower().endswith(('.png', '.jpg', '.jpeg', '.jp2', '.j2k'))
