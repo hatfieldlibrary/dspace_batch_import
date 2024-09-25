@@ -62,6 +62,22 @@ def generate_saf(item: Item, input_directory, saf_directory, count, alt_bundle):
     tree = ET.ElementTree(root)
     tree.write(saf_sub_directory + '/dublin_core.xml')
 
+    # dspace metadata schema
+    root = ET.Element("dublin_core", schema='dspace')
+    write_dspace = False
+    for key in item.data:
+        if key.startswith('dspace.'):
+            if item.data[key]:
+                elems = key.split('.')
+                if len(elems) == 3:
+                    ET.SubElement(root, "dcvalue", element=elems[1], qualifier=elems[2]).text = item.data[key]
+                else:
+                    ET.SubElement(root, "dcvalue", element=elems[1]).text = item.data[key]
+                write_dspace = True
+    if write_dspace:
+        tree = ET.ElementTree(root)
+        tree.write(saf_sub_directory + '/metadata_dspace.xml')
+
     # iiif metadata
     root = ET.Element("dublin_core", schema='iiif')
     write_iiif = False
