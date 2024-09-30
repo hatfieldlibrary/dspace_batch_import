@@ -24,7 +24,8 @@ parser.add_argument('dir', metavar='Parent directory', type=str,
 parser.add_argument('saf', metavar='Output SAF directory', type=str,
                     help='full path to the output directory that will contain the SAF subdirectories')
 parser.add_argument('-b',  "--bundle",
-                    help='images can be added to an alternate bundle if you do not want them included in the default (ORIGINAL) bundle')
+                    help='images can be added to an alternate bundle if you do not want them included in the default '
+                         '(ORIGINAL) bundle')
 args = parser.parse_args()
 
 directory = args.dir

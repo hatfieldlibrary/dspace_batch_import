@@ -8,7 +8,7 @@ item = Item()
 
 
 def process_rows(input_values: list, directory: str, saf_directory: str, alt_bundle: str):
-    '''
+    """
     Reads the file input one line at a time to process item and bitstream
     information. Calls the generate SAF function for individual items.
 
@@ -17,7 +17,7 @@ def process_rows(input_values: list, directory: str, saf_directory: str, alt_bun
     :param saf_directory: The output SAF directory
     :param alt_bundle: if provided image bitstreams will be added to this bundle
     :return: void
-    '''
+    """
 
     create_output_saf_directory(saf_directory)
 

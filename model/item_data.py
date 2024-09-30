@@ -32,35 +32,32 @@ class Item:
         """
         self.reset()
 
-    def set_value(self, key, value):
+    def set_value(self, key: str, value: str):
         """
         Set a value for a specific key in the dictionary.
 
-        Args:
-        key (str): The key to update.
-        value: The value to set for the key.
+        :param key: The key to update.
+        :param value: The value to set for the key.
+        :raises
+        Raises: ValueError: If the key is not a valid dublin core field.
 
-        Raises:
-        ValueError: If the key is not a valid dublin core field.
+        :return: void
         """
+
         if key not in self.data:
             raise ValueError(f"Invalid key '{key}'.")
 
         self.data[key] = value
 
-    def get_value(self, key):
+    def get_value(self, key: str):
         """
         Get the value for a specific key from the dictionary.
 
-        Args:
-        key (str): The key to retrieve.
-
-        Returns:
-        The value associated with the key.
-
-        Raises:
-        ValueError: If the key is not one a valid dublin core field name.
+        :param key: The key to retrieve.
+        :raises: ValueError: If the key is not one a valid dublin core field name.
+        :return: The value associated with the key.
         """
+
         if key not in self.data:
             raise ValueError(f"Invalid key '{key}'.")
 

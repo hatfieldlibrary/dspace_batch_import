@@ -5,26 +5,24 @@ import xml.etree.cElementTree as ET
 from model.item_data import Item
 
 
-def generate_saf(item: Item, input_directory, saf_directory, count, alt_bundle):
+def generate_saf(item: Item, input_directory: str, saf_directory: str, count: int, alt_bundle: str):
     """
     Creates a new SAF subdirectory for an item. The subdirectory will
     contain the contents and dublin_core metadata as well as bitstreams.
     It may optionally contain iiif and local metadata.
 
-    Args:
-    item (Item): The object containing the metadata fields and list of
+    :param item: The object containing the metadata fields and list of
     bitstreams for an item.
-    input_directory (str): The path to the input directory containing the
+    :param input_directory: The path to the input directory containing the
     csv file and bitstreams.
-    saf_directory (str): The location of the SAF output directory
-    count (number): The number of the items processed. Used to name the
+    :param saf_directory: The location of the SAF output directory
+    :param count: The number of the items processed. Used to name the
     SAF subdirectory for the item.
-    alt_bundle (str): If provided, image bitstreams are added to this bundle
+    :param alt_bundle: If provided, image bitstreams are added to this bundle
 
-    Returns:
-    Void
-
+    :return: void
     """
+
     # create the saf subdirectory for this item.
     saf_sub_directory = saf_directory + '/' + f"{count:04}"
     os.mkdir(saf_sub_directory)
@@ -40,11 +38,11 @@ def generate_saf(item: Item, input_directory, saf_directory, count, alt_bundle):
         if alt_bundle and check_extension(file):
             file_name = file_name + '\tbundle:' + alt_bundle
         if bit['iiif.label']:
-            file_name = file_name + '\tiiif-label:' +  bit['iiif.label']
+            file_name = file_name + '\tiiif-label:' + bit['iiif.label']
         if bit['iiif.description']:
-            file_name = file_name + '\tiiif-description:' +  bit['iiif.description']
+            file_name = file_name + '\tiiif-description:' + bit['iiif.description']
         if bit['iiif.toc']:
-            file_name = file_name + '\tiiif-toc:' +  bit['iiif.toc']
+            file_name = file_name + '\tiiif-toc:' + bit['iiif.toc']
         shutil.copyfile(input_directory + '/' + file, saf_sub_directory + '/' + file)
         contents_file.write(file_name + '\n')
     contents_file.close()
@@ -109,6 +107,7 @@ def generate_saf(item: Item, input_directory, saf_directory, count, alt_bundle):
     if write_local:
         tree = ET.ElementTree(root)
         tree.write(saf_sub_directory + '/metadata_local.xml')
+
 
 def check_extension(file):
     return file.lower().endswith(('.png', '.jpg', '.jpeg', '.jp2', '.j2k'))
