@@ -1,6 +1,8 @@
 import os
 import shutil
 import xml.etree.cElementTree as ET
+from pathlib import Path
+from zipfile import ZipFile
 
 from model.item_data import Item
 
@@ -24,8 +26,10 @@ def generate_saf(item: Item, input_directory: str, saf_directory: str, count: in
     """
 
     # create the saf subdirectory for this item.
-    saf_sub_directory = saf_directory + '/' + f"{count:04}"
-    os.mkdir(saf_sub_directory)
+    nested_directory_path = Path(saf_directory, 'saf_import_files_unzipped', f"{count:04}")
+    nested_directory_path.mkdir(parents=True, exist_ok=True)
+
+    saf_sub_directory = os.path.join(saf_directory, 'saf_import_files_unzipped',  f"{count:04}")
 
     # get this list of bitstreams for the item
     bits = item.get_value('bitstreams')
@@ -108,6 +112,44 @@ def generate_saf(item: Item, input_directory: str, saf_directory: str, count: in
         tree = ET.ElementTree(root)
         tree.write(saf_sub_directory + '/metadata_local.xml')
 
+    archive = saf_directory + '/saf_output.zip'
+
+    file_paths = get_all_file_paths(saf_directory)
+
+    with ZipFile(archive, 'w') as zipper:
+        # writing each file one by one
+        for file in file_paths:
+            p = Path(file).parts
+            arcname = os.path.join('saf-import', p[-2], p[-1])
+            zipper.write(file, arcname)
+
 
 def check_extension(file):
     return file.lower().endswith(('.png', '.jpg', '.jpeg', '.jp2', '.j2k'))
+
+
+def get_all_file_paths(directory):
+    # initializing empty file paths list
+    file_paths = []
+    # crawling through directory and subdirectories
+    for root, directories, files in os.walk(directory):
+        if 'saf_import_files_unzipped' in root:
+            for filename in files:
+                # join the two strings in order to form the full filepath.
+                filepath = os.path.join(root, filename)
+                file_paths.append(filepath)
+
+    # returning all file paths
+    return file_paths
+
+
+def make_directory(directory):
+    try:
+        os.mkdir(directory)
+        print(f"Directory '{directory}' created successfully.")
+    except FileExistsError:
+        print(f"Directory '{directory}' already exists.")
+    except PermissionError:
+        print(f"Permission denied: Unable to create '{directory}'.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
