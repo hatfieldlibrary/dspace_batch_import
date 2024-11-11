@@ -1,12 +1,34 @@
 from model.bitstream import Bitstream
 
+# Static array of metadata field names used to validate and add fields.
+item_data = [
+    'Filename',
+    'dc.title',
+    'dc.description.abstract',
+    'dc.description',
+    'dc.contributor.author',
+    'dc.contributor',
+    'dc.date.issued',
+    'dc.date.created',
+    'dc.subject',
+    'dc.publisher',
+    'dc.type',
+    'dc.coverage.spatial',
+    'dc.rights',
+    'dc.rights.uri',
+    'dc.format.medium',
+    'dc.format.extent',
+    'dspace.iiif.enabled',
+    'iiif.canvas.naming'
+]
+
 
 class Item:
     """
     A class to populate a dictionary with keys based on dspace dublin core field names.
     """
 
-    # Class variable to store the dictionary
+    # Class data dictionary of metadata values
     data = {'dc.title': None,
             'dc.description.abstract': None,
             'dc.description': None,
@@ -15,6 +37,7 @@ class Item:
             'dc.date.issued': None,
             'dc.date.created': None,
             'dc.subject': None,
+            'dc.publisher': None,
             'dc.type': None,
             'dc.coverage.spatial': None,
             'dc.rights': None,
@@ -44,7 +67,8 @@ class Item:
         :return: void
         """
 
-        if key not in self.data:
+        # Verify the key is part of the static array of metadata fields.
+        if key not in item_data:
             raise ValueError(f"Invalid key '{key}'.")
 
         self.data[key] = value
@@ -57,7 +81,6 @@ class Item:
         :raises: ValueError: If the key is not one a valid dublin core field name.
         :return: The value associated with the key.
         """
-
         if key not in self.data:
             raise ValueError(f"Invalid key '{key}'.")
 
@@ -86,5 +109,3 @@ class Item:
         Return a string representation of the dictionary.
         """
         return str(self.data)
-
-

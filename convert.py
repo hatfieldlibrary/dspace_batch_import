@@ -2,9 +2,10 @@ import argparse
 from csv import DictReader
 
 from processor.process_rows import process_rows
+from processor.validate_input import validate
 
 
-def process_input(parent_directory, saf_directory, alt_bundle):
+def process_input(parent_directory, saf_directory, alt_bundle, validate_input):
 
     input_file = parent_directory + '/' + 'input.csv'
 
@@ -13,7 +14,10 @@ def process_input(parent_directory, saf_directory, alt_bundle):
         reader = DictReader(infile)
         # creates a list of dictionaries
         list_of_dict = list(reader)
-        process_rows(list_of_dict, parent_directory, saf_directory, alt_bundle)
+        if not validate_input:
+            process_rows(list_of_dict, parent_directory, saf_directory, alt_bundle)
+        else:
+            validate(list_of_dict, parent_directory)
 
 
 parser = argparse.ArgumentParser(
@@ -26,9 +30,12 @@ parser.add_argument('saf', metavar='Output SAF directory', type=str,
 parser.add_argument('-b',  "--bundle",
                     help='images can be added to an alternate bundle if you do not want them included in the default '
                          '(ORIGINAL) bundle')
+parser.add_argument('-v',  "--validate", action="store_true",
+                    help='Checks the metadata fields and file names for accuracy.')
+
 args = parser.parse_args()
 
 directory = args.dir
 saf = args.saf
 
-process_input(directory.rstrip('/'), saf.rstrip('/'), args.bundle)
+process_input(directory.rstrip('/'), saf.rstrip('/'), args.bundle, args.validate)
